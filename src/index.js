@@ -8,6 +8,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { store } from './redux/store';
+import { Provider } from 'react-redux';
+
 import { Root } from './components/Root';
 import { Posts } from './pages/posts';
 import { DetailPost } from './pages/posts/detail';
@@ -56,7 +59,9 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );
 
