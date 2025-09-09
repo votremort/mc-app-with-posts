@@ -1,65 +1,103 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { postsAPI } from "../../api/postsAPI";
 
 const initialState = {
-  list: [
-    {
-      id: 5,
-      title: 'Post 5',
-      image: 'https://img2.safereactor.cc/pics/post/full/%D0%BA%D0%BE%D1%82%D1%8D-%D0%A1%D1%84%D0%B8%D0%BD%D0%BA%D1%81-(%D0%BF%D0%BE%D1%80%D0%BE%D0%B4%D0%B0)-%D0%BC%D0%B0%D0%BD%D1%87%D0%BA%D0%B8%D0%BD-7357586.jpeg',
-      text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat minus, quo doloribus praesentium modi provident minima rem adipisci molestiae ipsa quia cum facere asperiores tempora quod incidunt consequuntur vero sed.',
-    },
-    {
-      id: 4,
-      title: 'Post 4',
-      image: 'https://img2.safereactor.cc/pics/post/full/%D0%BA%D0%BE%D1%82%D1%8D-%D0%A1%D1%84%D0%B8%D0%BD%D0%BA%D1%81-(%D0%BF%D0%BE%D1%80%D0%BE%D0%B4%D0%B0)-%D0%BC%D0%B0%D0%BD%D1%87%D0%BA%D0%B8%D0%BD-7357586.jpeg',
-      text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat minus, quo doloribus praesentium modi provident minima rem adipisci molestiae ipsa quia cum facere asperiores tempora quod incidunt consequuntur vero sed.',
-    },
-    {
-      id: 3,
-      title: 'Post 3',
-      image: 'https://img2.safereactor.cc/pics/post/full/%D0%BA%D0%BE%D1%82%D1%8D-%D0%A1%D1%84%D0%B8%D0%BD%D0%BA%D1%81-(%D0%BF%D0%BE%D1%80%D0%BE%D0%B4%D0%B0)-%D0%BC%D0%B0%D0%BD%D1%87%D0%BA%D0%B8%D0%BD-7357586.jpeg',
-      text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat minus, quo doloribus praesentium modi provident minima rem adipisci molestiae ipsa quia cum facere asperiores tempora quod incidunt consequuntur vero sed.',
-    },
-    {
-      id: 2,
-      title: 'Post 2',
-      image: 'https://img2.safereactor.cc/pics/post/full/%D0%BA%D0%BE%D1%82%D1%8D-%D0%A1%D1%84%D0%B8%D0%BD%D0%BA%D1%81-(%D0%BF%D0%BE%D1%80%D0%BE%D0%B4%D0%B0)-%D0%BC%D0%B0%D0%BD%D1%87%D0%BA%D0%B8%D0%BD-7357586.jpeg',
-      text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat minus, quo doloribus praesentium modi provident minima rem adipisci molestiae ipsa quia cum facere asperiores tempora quod incidunt consequuntur vero sed.',
-    },
-    {
-      id: 1,
-      title: 'Post 1',
-      image: 'https://img2.safereactor.cc/pics/post/full/%D0%BA%D0%BE%D1%82%D1%8D-%D0%A1%D1%84%D0%B8%D0%BD%D0%BA%D1%81-(%D0%BF%D0%BE%D1%80%D0%BE%D0%B4%D0%B0)-%D0%BC%D0%B0%D0%BD%D1%87%D0%BA%D0%B8%D0%BD-7357586.jpeg',
-      text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat minus, quo doloribus praesentium modi provident minima rem adipisci molestiae ipsa quia cum facere asperiores tempora quod incidunt consequuntur vero sed.',
-    },
-  ],
-  postForView: null,
-  freshPosts: null,
+  posts: {
+    list: null,
+    loading: false
+  },
+  postForView: {
+    post: null,
+    loading: false,
+  },
+  freshPosts: {
+    posts: null,
+    loading: false,
+  },
 }
+
+export const getPostById = createAsyncThunk(
+  'posts/fetchById',
+  async (postId) => {
+    return await postsAPI.fetchById(postId)
+  }
+)
+export const getPosts = createAsyncThunk(
+  'posts/fetchPosts',
+  async () => {
+    return await postsAPI.fetchPosts()
+  }
+)
+export const getFreshPosts = createAsyncThunk(
+  'posts/fetchFreshPosts',
+  async (limit) => {
+    return await postsAPI.fetchFreshPosts(limit)
+  }
+)
 
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPosts: (state, action) => {
-      state.list = action.payload;
-    },
     editPost: (state, action) => {
 
     },
-    getPost: (state, action) => {
-      state.postForView = state.list.find((item) => item.id === action.payload)
-    },
-    getFreshPosts: (state) => {
-      state.freshPosts = state.list.slice(0, 3)
-    },
     addPost: (state, action) => {
-
+      const newPost = {...action.payload}
+      newPost.id = new Date().getTime()
+      state.posts.list = state.posts.list ? [newPost, ...state.posts.list] : [newPost]
     },
+    showPost: (state, action) => {
+      state.postForView = {
+        post: action.payload,
+        loading: false
+      }
+    }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getPostById.pending, (state, action) => {
+      state.postForView = {
+        post: null,
+        loading: true
+      }
+    })
+    builder.addCase(getPostById.fulfilled, (state, action) => {
+      state.postForView = {
+        post: action.payload,
+        loading: false
+      }
+    })
 
-  }
+    builder.addCase(getPosts.pending, (state, action) => {
+      state.posts = {
+        list: null,
+        loading: true
+      }
+    })
+
+    builder.addCase(getPosts.fulfilled, (state, action) => {
+      state.posts = {
+        list: action.payload,
+        loading: false
+      }
+    })
+
+    builder.addCase(getFreshPosts.pending, (state, action) => {
+      state.freshPosts = {
+        posts: null,
+        loading: true
+      }
+    })
+    builder.addCase(getFreshPosts.fulfilled, (state, action) => {
+      state.freshPosts = {
+        posts: action.payload,
+        loading: false
+      }
+    })
+
+  },
 })
 
-export const { setPosts, editPost, getPost, getFreshPosts, addPost } = postsSlice.actions;
+export const { editPost, addPost, showPost } = postsSlice.actions;
 
 export default postsSlice.reducer

@@ -1,3 +1,10 @@
 import React from "react";
+import { PostForm } from "../components/PostForm";
 
-export const AddPostPage = () => <div>Посты. Добавление поста</div>
+export const AddPostPage = () => {
+  return (
+    <>
+      <PostForm />
+    </>
+  )
+}
