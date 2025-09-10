@@ -44,7 +44,6 @@ export const postsSlice = createSlice({
         if (post.id === action.payload.id) {
           return action.payload
         }
-
         return post
       })
     },
@@ -58,52 +57,59 @@ export const postsSlice = createSlice({
         post: action.payload,
         loading: false
       }
-    }
-  },
-  extraReducers: (builder) => {
-    builder.addCase(getPostById.pending, (state, action) => {
+    },
+    deletePost: (state, action) => {
+      state.posts.list = state.posts.list.filter((post) => post.id !== action.payload.id);
       state.postForView = {
         post: null,
-        loading: true
-      }
-    })
-    builder.addCase(getPostById.fulfilled, (state, action) => {
-      state.postForView = {
-        post: action.payload,
         loading: false
       }
-    })
+    },
+    extraReducers: (builder) => {
+      builder.addCase(getPostById.pending, (state, action) => {
+        state.postForView = {
+          post: null,
+          loading: true
+        }
+      })
+      builder.addCase(getPostById.fulfilled, (state, action) => {
+        state.postForView = {
+          post: action.payload,
+          loading: false
+        }
+      })
 
-    builder.addCase(getPosts.pending, (state, action) => {
-      state.posts = {
-        list: null,
-        loading: true
-      }
-    })
+      builder.addCase(getPosts.pending, (state, action) => {
+        state.posts = {
+          list: null,
+          loading: true
+        }
+      })
 
-    builder.addCase(getPosts.fulfilled, (state, action) => {
-      state.posts = {
-        list: action.payload,
-        loading: false
-      }
-    })
+      builder.addCase(getPosts.fulfilled, (state, action) => {
+        state.posts = {
+          list: action.payload,
+          loading: false
+        }
+      })
 
-    builder.addCase(getFreshPosts.pending, (state, action) => {
-      state.freshPosts = {
-        posts: null,
-        loading: true
-      }
-    })
-    builder.addCase(getFreshPosts.fulfilled, (state, action) => {
-      state.freshPosts = {
-        posts: action.payload,
-        loading: false
-      }
-    })
+      builder.addCase(getFreshPosts.pending, (state, action) => {
+        state.freshPosts = {
+          posts: null,
+          loading: true
+        }
+      })
+      builder.addCase(getFreshPosts.fulfilled, (state, action) => {
+        state.freshPosts = {
+          posts: action.payload,
+          loading: false
+        }
+      })
 
-  },
+    }
+  }
 })
 
-export const { editPost, addPost, showPost } = postsSlice.actions;
+export const { editPost, addPost, showPost, deletePost } = postsSlice.actions;
 
 export default postsSlice.reducer
