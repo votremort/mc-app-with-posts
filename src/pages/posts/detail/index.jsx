@@ -3,9 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getPostById, showPost, deletePost } from "../../../redux/slices/postsSlice";
 
-import { Typo } from "../../../components/Typo";
-import { Container } from "../../../components/Container";
-import { Link } from "../../../UI components/Link";
+import { Typo } from "../../../components/ui/Typo";
+import { Container } from "../../../components/ui/Container";
+import { Link } from "../../../components/ui/Link";
 
 
 import * as SC from "./styles"
