@@ -3,8 +3,8 @@ import React, { useEffect } from "react";
 import { useSelector,useDispatch } from "react-redux";
 
 import { Posts } from "../../components/Posts";
-import {Container} from "../../components/Container";
-import { Typo } from "../../components/Typo";
+import { Container } from "../../components/ui/Container";
+import { Typo } from "../../components/ui/Typo";
 import { getFreshPosts } from "../../redux/slices/postsSlice";
 
 export const MainPage = () => {

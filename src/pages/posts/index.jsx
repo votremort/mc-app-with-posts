@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Container } from "../../components/Container";
+import { Container } from "../../components/ui/Container";
 import { Posts } from "../../components/Posts";
-import { Typo } from "../../components/Typo";
+import { Typo } from "../../components/ui/Typo";
 import { getPosts } from "../../redux/slices/postsSlice";
 
 export const PostsPage = () => {
