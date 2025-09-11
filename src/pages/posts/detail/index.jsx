@@ -13,12 +13,15 @@ import * as SC from "./styles"
 export const DetailPostPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
+  const { user } = useSelector((state) => state.auth);
   const { list } = useSelector((state) => state.posts.posts);
   const postForView = useSelector((state) => state.posts.postForView);
   
   const [postForDelete, setPostForDelete] = useState(null);
+
+  const showEditAndDeleteBtn = list && user;
 
   const onDeletePost = () => {
     dispatch(deletePost(postForDelete));
@@ -67,7 +70,7 @@ export const DetailPostPage = () => {
     <div style={{clear: 'both'}}/>
     <SC.LinkWrapper>
       <Link to='/posts/'>Обратно к публикациям</Link>
-      {!list && 
+      {showEditAndDeleteBtn && 
         <>
           <Link to={`/posts/${post.id}/edit`}>Редактировать пост</Link>
           <SC.DeleteButton onClick={() => setPostForDelete(post)}>Удалить</SC.DeleteButton>

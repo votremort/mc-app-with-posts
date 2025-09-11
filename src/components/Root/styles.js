@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const Menu = styled.div`
   display: flex;
   max-width: 500px;
-  margin: 0 auto;
+  margin: 15px auto 0 auto;
   gap: 15px;
   align-items: center;
   justify-content: space-between;
