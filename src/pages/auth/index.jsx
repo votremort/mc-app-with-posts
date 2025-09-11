@@ -6,6 +6,7 @@ import { Typo } from "../../components/ui/Typo";
 import { Form } from "../../components/ui/Form";
 import { Field } from "../../components/ui/Field";
 import { Input } from "../../components/ui/Input";
+import { Button } from "../../components/ui/Button";
 
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/slices/authSlice";
@@ -70,7 +71,7 @@ export const AuthPage = () => {
             onChange={(e) => onChange(e.target.name, e.target.value)}
           />
         </Field>
-        <button type="submit" disabled={disabled}>Войти</button>
+        <Button type="submit" disabled={disabled} text='Войти'/>
       </Form>
     </Container>
 
