@@ -6,6 +6,8 @@ import { getPostById, showPost, deletePost } from "../../../redux/slices/postsSl
 import { Typo } from "../../../components/ui/Typo";
 import { Container } from "../../../components/ui/Container";
 import { Link } from "../../../components/ui/Link";
+import { Modal } from "../../../components/ui/Modal";
+import { Button } from "../../../components/ui/Button";
 
 
 import * as SC from "./styles"
@@ -54,16 +56,11 @@ export const DetailPostPage = () => {
 
   return (<Container>
     {postForDelete && 
-      <SC.ModalWrapper>
-        <SC.Modal>
-          <SC.ModalText>{`Вы уверены, что хотите удалить пост c ID ${postForDelete.id}?`}</SC.ModalText> 
-          <SC.ModalContent>
-            <SC.DeleteButton onClick={onDeletePost}>Да</SC.DeleteButton>
-            <button onClick={() => setPostForDelete(null)}>Нет</button>
-          </SC.ModalContent>
-        </SC.Modal>
-      </SC.ModalWrapper>
-    }
+      <Modal 
+        text={`Вы уверены, что хотите удалить пост c ID ${postForDelete.id}?`} 
+        onClickForYesBtn={onDeletePost}
+        onClickForNoBtn={() => setPostForDelete(null)}
+      />}
     <Typo>{post.title}</Typo>
     <SC.Image src={image} alt={post.id}/>
     <SC.Text>{post.body}</SC.Text>
@@ -73,7 +70,11 @@ export const DetailPostPage = () => {
       {showEditAndDeleteBtn && 
         <>
           <Link to={`/posts/${post.id}/edit`}>Редактировать пост</Link>
-          <SC.DeleteButton onClick={() => setPostForDelete(post)}>Удалить</SC.DeleteButton>
+          <Button 
+            onClick={() => setPostForDelete(post)} 
+            text='Удалить'
+            attentStyle={true}
+          />
         </>
       }
     </SC.LinkWrapper>

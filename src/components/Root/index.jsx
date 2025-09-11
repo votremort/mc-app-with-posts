@@ -3,6 +3,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import * as SC from "./styles";
 import { Container } from "../ui/Container" ;
+import { Button } from "../ui/Button";
+
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
 
@@ -25,8 +27,8 @@ export const Root = () => {
         <SC.MenuItem to={'/posts'}>Список постов</SC.MenuItem>
         {!user && <SC.MenuItem to={'/auth'}>Авторизация</SC.MenuItem> }
         {!user && <SC.MenuItem to={'/registration'}>Регистрация</SC.MenuItem> }
-        {user && <button onClick={onClickExitBtn}>Выйти</button>}
         {user && <SC.MenuItem to={'/posts/add'}>Добавить пост</SC.MenuItem>}
+        {user && <Button onClick={onClickExitBtn} text='Выход'/>}
       </SC.Menu>
     </Container>
     <Outlet />
