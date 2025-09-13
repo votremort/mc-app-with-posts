@@ -1,36 +1,42 @@
 import React, { useEffect } from "react";
 
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { Posts } from "../../components/Posts";
 import { Container } from "../../components/ui/Container";
 import { Typo } from "../../components/ui/Typo";
-import { getFreshPosts } from "../../redux/slices/postsSlice";
+import { Loader } from "../../components/ui/Loader"
+import { getPosts, selectFreshPosts } from "../../redux/slices/postsSlice";
 
 export const MainPage = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const freshPosts = useSelector(selectFreshPosts);
+  const loading = useSelector((state) => state.posts.loading);
+  console.log('fresh Posts')
+  console.log(freshPosts);
   const { post } = useSelector((state) => state.posts.postForView);
-  const { posts, loading } = useSelector((state) => state.posts.freshPosts);
+  // const { posts, loading } = useSelector((state) => state.posts.freshPosts);
 
   useEffect(() => {
-    dispatch(getFreshPosts())
-  }, [])
+    dispatch(getPosts())
+  }, [dispatch])
 
   return (
     <>
       <Container>
-        {loading && <>Loading...</>}
-        { posts && 
+        {loading && <Loader />}
+        { freshPosts && 
           <>
             <Typo> Свежие публикации</Typo>
-            <Posts posts={posts}/>
+            <Posts posts={freshPosts}/>
           </>
         }
 
-        { posts && 
+        { post && 
           <>
             <Typo>Последний просмотренный пост</Typo>
-            <Posts posts={[post]}/>
+            {post ? <Posts posts={[post]}/> : <div>Вы пока ничего не посмотрели</div>}
+            
           </>
         }
        
