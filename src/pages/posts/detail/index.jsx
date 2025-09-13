@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getPostById, showPost, deletePost } from "../../../redux/slices/postsSlice";
+import { getPostById, showPost, deletePost, } from "../../../redux/slices/postsSlice";
 
 import { Typo } from "../../../components/ui/Typo";
 import { Container } from "../../../components/ui/Container";
@@ -11,6 +11,7 @@ import { Button } from "../../../components/ui/Button";
 
 
 import * as SC from "./styles"
+import { Loader } from "../../../components/ui/Loader";
 
 export const DetailPostPage = () => {
   const { id } = useParams();
@@ -48,7 +49,7 @@ export const DetailPostPage = () => {
   };
 
   if (postForView.loading) {
-    <Container>Loading...</Container>
+    <Loader/>
   };
   console.log(postForDelete)
   const { post } = postForView;

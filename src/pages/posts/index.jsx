@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Container } from "../../components/ui/Container";
 import { Posts } from "../../components/Posts";
 import { Typo } from "../../components/ui/Typo";
+import { Loader } from "../../components/ui/Loader";
 import { getPosts } from "../../redux/slices/postsSlice";
 
 export const PostsPage = () => {
@@ -18,7 +19,7 @@ export const PostsPage = () => {
   }, [list, dispatch]);
 
   if (!list && loading) {
-    return <Container>Loading...</Container>
+    return <Loader />
   }
 
   if (!list) {
