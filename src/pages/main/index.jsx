@@ -11,7 +11,7 @@ import { getPosts, selectFreshPosts } from "../../redux/slices/postsSlice";
 export const MainPage = () => {
   const dispatch = useDispatch();
   const freshPosts = useSelector(selectFreshPosts);
-  const loading = useSelector((state) => state.posts.loading);
+  const loading = useSelector((state) => state.loading);
   console.log('fresh Posts')
   console.log(freshPosts);
   const { post } = useSelector((state) => state.posts.postForView);
