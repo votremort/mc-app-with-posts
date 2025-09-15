@@ -4,12 +4,17 @@ import { postsAPI } from "../../api/postsAPI";
 const initialState = {
   posts: {
     list: [],
-    loading: false
+    // loading: false
   },
   postForView: {
     post: null,
     loading: false,
   },
+  loading: false,
+  currentPage: 1,  //хранение номера страницы
+  sortOrder: 'id_desc',  //по умолчанию сортировка по id по убыанию
+  filterText: '', // фильтр по началу названия
+
   // freshPosts: {
   //   posts: null,
   //   loading: false,
@@ -20,7 +25,45 @@ const initialState = {
 const selectAllPosts = (state) => state.posts?.posts?.list ?? [];
 export const selectFreshPosts = createSelector(
   [selectAllPosts],
-  (posts) => posts.filter(post => post.id > 97)
+  (posts) => posts.filter(post => post.id >= 97)
+);
+
+//селектор для фильтрации постов по началу названия
+export const selectFilteredPosts = createSelector(
+  [selectAllPosts, (state) => state.posts.sortOrder, (state) => state.posts.filterText],
+  (posts, sortOrder, filterText) => {
+    //фильтр
+    const filtered = posts.filter(post => 
+      post.title.toLowerCase().startsWith(filterText.toLowerCase())
+    );
+    //сортировка
+    const sorted = [...filtered];
+    switch (sortOrder) {
+      case 'id_asc': 
+        sorted.sort((a, b) => a.id - b.id);
+        break;
+      case 'id_desc': 
+        sorted.sort((a,b) => b.id - a.id);
+        break;
+      case 'name_asc': 
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case 'name_desc': 
+        sorted.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      default:
+    }
+    return sorted
+  }
+);
+
+//селектор для получения числа страниц
+export const selectTotalPagesFiltered = createSelector(
+  [selectFilteredPosts],
+  (filteredPosts) => {
+    const postsPerPage = 10;  // или передавайте из пропсов
+    return Math.ceil(filteredPosts.length / postsPerPage);
+  }
 );
 
 export const getPostById = createAsyncThunk(
@@ -46,6 +89,21 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
+    //для сортировки
+    setSortOrder: (state, action) => {
+      state.sortOrder = action.payload;
+      //при смене сортировки сбрасываем страницу
+      state.currentPage = 1;
+    },
+    //для фильтрации
+    setFilterText: (state, action) => {
+      state.filterText = action.payload;
+      state.currentPage = 1;
+    },
+    //для изменения номера страницы
+    setPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
     editPost: (state, action) => {
       state.posts.list = state.posts.list.map((post) => {
         if (post.id === action.payload.id) {
@@ -94,16 +152,18 @@ export const postsSlice = createSlice({
       }
     });
     builder.addCase(getPosts.pending, (state, action) => {
-      state.posts = {
-        list: null,
-        loading: true
-      }
+      state.loading = true
+      // state.posts = {
+      //   // list: [],
+      //   loading: true
+      // }
     });
     builder.addCase(getPosts.fulfilled, (state, action) => {
       state.posts = {
         list: action.payload,
-        loading: false
+        // loading: false
       }
+      state.loading = false
     });
     // builder.addCase(getFreshPosts.pending, (state, action) => {
     //   state.freshPosts = {
@@ -120,6 +180,6 @@ export const postsSlice = createSlice({
   },
 })
 
-export const { editPost, addPost, showPost, deletePost } = postsSlice.actions;
+export const { editPost, addPost, showPost, deletePost, setPage, setSortOrder, setFilterText } = postsSlice.actions;
 
 export default postsSlice.reducer
