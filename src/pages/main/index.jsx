@@ -10,16 +10,20 @@ import { getPosts, selectFreshPosts } from "../../redux/slices/postsSlice";
 
 export const MainPage = () => {
   const dispatch = useDispatch();
+  const posts = useSelector(state => state.posts.posts.list);
   const freshPosts = useSelector(selectFreshPosts);
-  const loading = useSelector((state) => state.loading);
+  const loading = useSelector((state) => state.posts.loading);
   console.log('fresh Posts')
   console.log(freshPosts);
   const { post } = useSelector((state) => state.posts.postForView);
   // const { posts, loading } = useSelector((state) => state.posts.freshPosts);
 
   useEffect(() => {
-    dispatch(getPosts())
-  }, [dispatch])
+    if (posts.length === 0 && !loading) {
+      dispatch(getPosts())
+      console.log('dispatch in main')
+    }
+  }, [dispatch, loading, posts.length])
 
   return (
     <>

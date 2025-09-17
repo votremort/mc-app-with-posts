@@ -1,10 +1,16 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import * as SC from "./styles"
+
 import { Container } from "../../components/ui/Container";
 import { Posts } from "../../components/Posts";
+
 import { Typo } from "../../components/ui/Typo";
 import { Loader } from "../../components/ui/Loader";
+import { Button } from "../../components/ui/Button";
+import { Input } from "../../components/ui/Input";
+
 import { getPosts, setPage, selectTotalPagesFiltered,
   setSortOrder, setFilterText, selectFilteredPosts
  } from "../../redux/slices/postsSlice";
@@ -55,8 +61,8 @@ export const PostsPage = () => {
   return (
     <Container>
       <Typo>Публикации</Typo>
-      <div>
-        <input 
+      <SC.SortFilterWrapper>
+        <Input 
           type="text"
           placeholder="Фильтр по названию"
           value={filterText}
@@ -66,43 +72,29 @@ export const PostsPage = () => {
             }
           }
         />
-      </div>
-      <div>
-        <label>Сортировка:</label>
-        <select 
-          value={sortOrder}
-          onChange={(e) => {
-            dispatch(setSortOrder(e.target.value))
-            dispatch(setPage(1))
+        <SC.SortWrapper>
+          <label>Сортировка:</label>
+          <select 
+            value={sortOrder}
+            onChange={(e) => {
+              dispatch(setSortOrder(e.target.value))
+              dispatch(setPage(1))
+              }
             }
-          }
-        >
+          >
           <option value='id_asc'>ID: по возрастанию</option>
           <option value='id_desc'>ID: по убыванию</option>
           <option value='name_asc'>Название: А - Z</option>
           <option value='name_desc'>Название:Z - A</option>
-        </select>
-      </div>
+          </select>
+        </SC.SortWrapper>
+      </SC.SortFilterWrapper>
       <Posts posts={postsToDisplay}/>
-      <div>
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          назад
-        </button>
-        <button
-          disabled
-        >
-          {currentPage}
-        </button>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          вперед
-        </button>
-      </div>
+      <SC.PaginationWrapper>
+        <Button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} text='назад'/>
+        <div>{currentPage}</div>
+        <Button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} text='вперед'/>
+      </SC.PaginationWrapper >
     </Container>
   )
 }
